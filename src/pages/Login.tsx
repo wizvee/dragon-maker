@@ -1,22 +1,28 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
+import { supabase } from "../lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
     if (error) {
       setError(error.message);
+    } else {
+      navigate("/");
     }
   };
 
