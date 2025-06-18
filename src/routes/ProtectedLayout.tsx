@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import NavBar from "@/components/NavBar";
 import { supabase } from "@/lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 
@@ -34,9 +33,8 @@ export function ProtectedLayout() {
   if (loading || !session) return null;
 
   return (
-    <>
-      <NavBar />
+    <div className="p-4">
       <Outlet />
-    </>
+    </div>
   );
 }
