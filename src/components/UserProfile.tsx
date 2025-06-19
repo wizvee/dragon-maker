@@ -30,7 +30,7 @@ const progressMeta: Record<
       stat && stat.max_xp ? ((stat.xp - stat.min_xp) / stat.max_xp) * 100 : 0,
   },
   sociability: {
-    label: "사회성",
+    label: "사회",
     order: 3,
     getPercent: (_, stat) =>
       stat && stat.max_xp ? ((stat.xp - stat.min_xp) / stat.max_xp) * 100 : 0,

@@ -3,6 +3,7 @@ import { ProtectedLayout } from "./routes/ProtectedLayout";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ProjectPage from "./pages/ProjectPage";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/project/:id" element={<ProjectPage />} />
       </Route>
     </Routes>
   );
