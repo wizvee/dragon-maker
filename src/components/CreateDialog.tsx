@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { useUser } from "@supabase/auth-helpers-react";
-import { AddCircleIcon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { PlusCircle, SpinnerGap } from "@phosphor-icons/react";
 
 import { STAT_LABELS } from "@/types/user";
 import { useStats } from "@/hooks/useStats";
@@ -66,7 +65,7 @@ export default function CreateDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <HugeiconsIcon icon={AddCircleIcon} size={20} />
+        <PlusCircle />
       </DialogTrigger>
       <DialogContent className="w-auto">
         <DialogHeader className="hidden">
@@ -108,9 +107,7 @@ export default function CreateDialog() {
           ))}
         </RadioGroup>
         <Button className="mt-4" onClick={handleCreate} disabled={isPending}>
-          {isPending && (
-            <HugeiconsIcon icon={Loading03Icon} className="animate-spin" />
-          )}
+          {isPending && <SpinnerGap className="animate-spin" />}
           생성하기
         </Button>
       </DialogContent>

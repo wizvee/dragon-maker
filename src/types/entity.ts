@@ -11,3 +11,13 @@ export const ENTITY_LABELS: Record<EntityType, string> = {
   area: "영역",
   resource: "자료",
 };
+
+export type Entity = {
+  id: string;
+  title: string;
+  stat: string;
+  type: EntityType;
+  content?: string;
+  due_date?: string | null;
+  archived?: boolean;
+};
