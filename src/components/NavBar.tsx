@@ -1,15 +1,10 @@
 import { useLocation } from "react-router-dom";
-import { statMeta } from "@/constants/statMeta";
 import { DotsThree } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const location = useLocation();
-
-  let title = "DASHBOARD";
-  const statMatch = location.pathname.match(/^\/stat\/([^/]+)/);
-  if (statMatch) {
-    title = statMeta[statMatch[1]]?.label || statMatch[1].toUpperCase();
-  }
+  const title =
+    location.pathname.split("/")[1].toLocaleUpperCase() || "DASHBOARD";
 
   return (
     <nav className="static flex h-16 flex-col items-center p-4 pt-5">
