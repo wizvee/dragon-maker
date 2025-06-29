@@ -38,7 +38,7 @@ export default function StatPage() {
   return (
     <div>
       {/* Level & Progress */}
-      <div className="-mt-8 px-6">
+      <div className="-mt-12 px-6">
         <div className="bg-background mb-4 flex flex-col gap-2 rounded-xl border border-slate-400 p-4">
           <div className="flex items-center justify-between">
             <span className="font-bold">LEVEL {statDetail.level}</span>
