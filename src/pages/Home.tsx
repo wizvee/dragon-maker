@@ -1,24 +1,26 @@
-import Profile from "@/components/UserProfile";
-import { useUserStats } from "@/hooks/useUserStats";
+import { useStats } from "@/hooks/useStats";
+import { useUserDetail } from "@/hooks/useUserDetail";
 import { useUser } from "@supabase/auth-helpers-react";
+
+import Profile from "@/components/UserProfile";
 
 export default function Home() {
   const user = useUser();
-  const { data, error, isLoading } = useUserStats(user?.id || "");
+  const { data: userDetail, isLoading: loadingUser } = useUserDetail(
+    user?.id || "",
+  );
+  const { data: stats, isLoading: loadingStats } = useStats(user?.id || "");
 
-  if (isLoading) {
+  if (loadingUser || loadingStats) {
     return <div>Loading...</div>;
   }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  if (!data) {
+  if (!userDetail || !stats) {
     return <div>No user data found.</div>;
   }
 
   return (
     <div>
-      <Profile data={data} />
+      <Profile user={userDetail} stats={stats} />
     </div>
   );
 }

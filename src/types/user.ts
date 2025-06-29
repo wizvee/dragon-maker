@@ -15,6 +15,5 @@ export const STAT_LABELS: Record<string, string> = {
 export type User = {
   name: string;
   level: number;
-  stats: Stat[];
   focus_minutes: number;
 };

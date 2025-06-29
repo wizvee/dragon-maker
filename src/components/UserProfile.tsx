@@ -1,26 +1,28 @@
-import type { User } from "@/types/user";
+import { Link } from "react-router-dom";
+import type { Stat, User } from "@/types/user";
 import { Lightning } from "@phosphor-icons/react";
 
-export default function UserProfile({ data }: { data: User }) {
-  console.log("UserProfile data:", data);
+import { statMeta } from "@/constants/statMeta";
+import ProgressBar from "./common/ProgressBar";
 
+interface ProfileProps {
+  user: User;
+  stats: Stat[];
+}
+
+export default function UserProfile({ stats }: ProfileProps) {
   return (
     <div>
       {/* MP Bar */}
-      <div className="mb-4 rounded-xl border border-slate-300 p-4">
+      <div className="mb-4 rounded-xl border border-slate-400 p-4">
         <div className="mb-2 flex items-center justify-between">
-          <div className="flex items-center gap-1 font-semibold">
+          <div className="flex items-center gap-1 font-bold">
             <Lightning size={20} weight="fill" className="text-chart-4" />
             MP
           </div>
-          <div className="font-bold">80 / 100</div>
+          <div className="text-sm font-semibold">80 / 100</div>
         </div>
-        <div className="h-4 w-full overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="bg-chart-4 h-full rounded-full"
-            style={{ width: "80%" }}
-          ></div>
-        </div>
+        <ProgressBar value={100} colorClass="bg-chart-4" />
       </div>
 
       {/* <div className="mb-4 rounded-xl border border-[#22304a] bg-white p-5">
@@ -53,45 +55,31 @@ export default function UserProfile({ data }: { data: User }) {
       </div> */}
 
       {/* Stats */}
-      <div className="mb-6 rounded-xl border border-slate-300 bg-slate-100/50 p-4">
+      <div className="mb-6 rounded-xl border border-slate-400 bg-slate-100/50 p-4">
         <h3 className="mb-3 font-bold">STATS</h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span></span>
-            <span className="w-24">Strength</span>
-            <div className="flex-1">
-              <div className="h-3 w-full rounded-full bg-slate-200">
-                <div
-                  className="bg-chart-1 h-full rounded-full"
-                  style={{ width: "70%" }}
-                ></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span></span>
-            <span className="w-24">Dexterity</span>
-            <div className="flex-1">
-              <div className="h-3 w-full rounded-full bg-slate-200">
-                <div
-                  className="bg-chart-2 h-full rounded-full"
-                  style={{ width: "50%" }}
-                ></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span></span>
-            <span className="w-24">Intelligence</span>
-            <div className="flex-1">
-              <div className="h-3 w-full rounded-full bg-slate-200">
-                <div
-                  className="bg-chart-3 h-full rounded-full"
-                  style={{ width: "80%" }}
-                ></div>
-              </div>
-            </div>
-          </div>
+        <div className="space-y-1">
+          {stats.map((stat) => {
+            const meta = statMeta[stat.stat];
+            const percent =
+              stat.max_xp > stat.min_xp
+                ? ((stat.xp - stat.min_xp) / (stat.max_xp - stat.min_xp)) * 100
+                : 0;
+            return (
+              <Link to={`/stat/${stat.stat}`} key={stat.stat}>
+                <div className="flex items-center gap-2 py-1.5">
+                  <span className="flex w-20 items-center text-sm">
+                    {meta.label}
+                    <span
+                      className={`ml-2 rounded-sm p-1 font-mono text-[8px] ${meta.background}`}
+                    >
+                      Lv.{stat.level}
+                    </span>
+                  </span>
+                  <ProgressBar value={percent} colorClass={meta.color} />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>

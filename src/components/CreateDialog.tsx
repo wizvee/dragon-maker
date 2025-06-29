@@ -65,7 +65,7 @@ export default function CreateDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <DotsThree size={18} />
+        <DotsThree size={16} />
       </DialogTrigger>
       <DialogContent className="w-auto">
         <DialogHeader className="hidden">
