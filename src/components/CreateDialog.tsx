@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@supabase/auth-helpers-react";
-import { PlusCircle, SpinnerGap } from "@phosphor-icons/react";
+import { DotsThree, SpinnerGap } from "@phosphor-icons/react";
 
 import { STAT_LABELS } from "@/types/user";
 import { useStats } from "@/hooks/useStats";
@@ -65,7 +65,7 @@ export default function CreateDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <PlusCircle />
+        <DotsThree size={18} />
       </DialogTrigger>
       <DialogContent className="w-auto">
         <DialogHeader className="hidden">

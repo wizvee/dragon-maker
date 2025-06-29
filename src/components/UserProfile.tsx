@@ -1,93 +1,98 @@
 import type { User } from "@/types/user";
-import { Progress } from "@/components/ui/progress";
-import { Card, CardContent } from "@/components/ui/card";
-
-// TODO: refactoring 필요
-const progressMeta: Record<
-  string,
-  {
-    label: string;
-    order: number;
-    getPercent: (user: User, stat?: User["stats"][number]) => number;
-  }
-> = {
-  mp: {
-    label: "집중",
-    order: 0,
-    getPercent: (user) =>
-      user.focus_minutes && user.focus_minutes > 0 ? 100 : 0, // 예시: 100%로 고정, 필요시 계산식 변경
-  },
-  health: {
-    label: "건강",
-    order: 1,
-    getPercent: (_, stat) =>
-      stat && stat.max_xp ? ((stat.xp - stat.min_xp) / stat.max_xp) * 100 : 0,
-  },
-  knowledge: {
-    label: "지식",
-    order: 2,
-    getPercent: (_, stat) =>
-      stat && stat.max_xp ? ((stat.xp - stat.min_xp) / stat.max_xp) * 100 : 0,
-  },
-  sociability: {
-    label: "사회",
-    order: 3,
-    getPercent: (_, stat) =>
-      stat && stat.max_xp ? ((stat.xp - stat.min_xp) / stat.max_xp) * 100 : 0,
-  },
-  // 필요한 stat 추가
-};
-
-// bars 생성 함수
-function getProgressBars(user: User) {
-  const statBars = user.stats
-    .map((stat) => {
-      const meta = progressMeta[stat.stat];
-      if (!meta) return null; // 정의되지 않은 stat은 무시
-      return {
-        key: stat.stat,
-        label: meta.label,
-        order: meta.order,
-        percent: meta.getPercent(user, stat),
-      };
-    })
-    .filter((bar) => bar !== null); // null 값 제거
-
-  // mp bar 추가
-  const mpMeta = progressMeta["mp"];
-  const mpBar = {
-    key: "mp",
-    label: mpMeta.label,
-    order: mpMeta.order,
-    percent: mpMeta.getPercent(user),
-  };
-
-  // 합치고 정렬
-  return [mpBar, ...statBars].sort((a, b) => a.order - b.order);
-}
+import { Lightning } from "@phosphor-icons/react";
 
 export default function UserProfile({ data }: { data: User }) {
-  const bars = getProgressBars(data);
+  console.log("UserProfile data:", data);
 
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col gap-4 md:flex-row md:items-start">
-      {/* 이미지 영역 */}
-      <Card className="bg-muted h-40 w-full flex-shrink-0 md:h-32 md:w-40">
-        <CardContent className="flex h-full items-center justify-center">
-          <span className="text-muted-foreground">이미지</span>
-        </CardContent>
-      </Card>
-      {/* 정보 영역 */}
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="mb-2 text-lg font-bold">
-          LV.{String(data.level).padStart(2, "0")} {data.name}
-        </div>
-        {bars.map((bar) => (
-          <div key={bar.key} className="mb-2 flex items-center gap-2 last:mb-0">
-            <div className="w-16 text-sm font-medium">{bar.label}</div>
-            <Progress value={bar.percent} className="h-5 flex-1" />
+    <div>
+      {/* MP Bar */}
+      <div className="mb-4 rounded-xl border border-slate-300 p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="flex items-center gap-1 font-semibold">
+            <Lightning size={20} weight="fill" className="text-chart-4" />
+            MP
           </div>
-        ))}
+          <div className="font-bold">80 / 100</div>
+        </div>
+        <div className="h-4 w-full overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="bg-chart-4 h-full rounded-full"
+            style={{ width: "80%" }}
+          ></div>
+        </div>
+      </div>
+
+      {/* <div className="mb-4 rounded-xl border border-[#22304a] bg-white p-5">
+        <h2 className="mb-3 text-lg font-bold text-[#22304a]">TODAY’S TASKS</h2>
+        <ul className="space-y-2">
+          <li className="flex items-center gap-2">
+            <span className="inline-block h-5 w-5 rounded-full border-2 border-[#22304a]"></span>
+            <span>Read for 15 minutes</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="inline-block h-5 w-5 rounded-full border-2 border-[#22304a]"></span>
+            <span>Meditate</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="inline-block h-5 w-5 rounded-full border-2 border-[#22304a]"></span>
+            <span>Go to the gym</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#22304a]">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+                <path
+                  d="M12 2C7 2 2 7 2 12c0 5 5 10 10 10s10-5 10-10c0-5-5-10-10-10zm0 18c-4.41 0-8-3.59-8-8 0-4.41 3.59-8 8-8 4.41 0 8 3.59 8 8 0 4.41-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                  fill="#22304a"
+                />
+              </svg>
+            </span>
+            <span>Eat a healthy breakfast</span>
+          </li>
+        </ul>
+      </div> */}
+
+      {/* Stats */}
+      <div className="mb-6 rounded-xl border border-slate-300 bg-slate-100/50 p-4">
+        <h3 className="mb-3 font-bold">STATS</h3>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span></span>
+            <span className="w-24">Strength</span>
+            <div className="flex-1">
+              <div className="h-3 w-full rounded-full bg-slate-200">
+                <div
+                  className="bg-chart-1 h-full rounded-full"
+                  style={{ width: "70%" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span></span>
+            <span className="w-24">Dexterity</span>
+            <div className="flex-1">
+              <div className="h-3 w-full rounded-full bg-slate-200">
+                <div
+                  className="bg-chart-2 h-full rounded-full"
+                  style={{ width: "50%" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span></span>
+            <span className="w-24">Intelligence</span>
+            <div className="flex-1">
+              <div className="h-3 w-full rounded-full bg-slate-200">
+                <div
+                  className="bg-chart-3 h-full rounded-full"
+                  style={{ width: "80%" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

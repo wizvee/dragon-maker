@@ -53,8 +53,8 @@ export default function ProjectPage() {
   if (error) return <div>Failed to load entity.</div>;
 
   return (
-    <div className="mx-auto mt-10 max-w-3xl">
-      <div className="mb-2 text-4xl">
+    <div className="mx-auto max-w-3xl md:mt-10">
+      <div className="mb-3 text-3xl">
         <RocketLaunch weight="duotone" />
       </div>
       {isEditing ? (

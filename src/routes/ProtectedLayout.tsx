@@ -35,11 +35,11 @@ export function ProtectedLayout() {
   if (loading || !session) return null;
 
   return (
-    <>
+    <div className="bg-slate-300">
       <NavBar />
-      <div className="md:mt-16">
+      <div className="bg-background rounded-t-3xl p-6">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 }
