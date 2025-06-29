@@ -25,7 +25,7 @@ export default function UserProfile({ stats }: ProfileProps) {
         <ProgressBar value={100} colorClass="bg-chart-4" />
       </div>
 
-      {/* <div className="mb-4 rounded-xl border border-[#22304a] bg-white p-5">
+      <div className="mb-4 rounded-xl border border-[#22304a] bg-white p-5">
         <h2 className="mb-3 text-lg font-bold text-[#22304a]">TODAY’S TASKS</h2>
         <ul className="space-y-2">
           <li className="flex items-center gap-2">
@@ -52,7 +52,7 @@ export default function UserProfile({ stats }: ProfileProps) {
             <span>Eat a healthy breakfast</span>
           </li>
         </ul>
-      </div> */}
+      </div>
 
       {/* Stats */}
       <div className="mb-6 rounded-xl border border-slate-400 bg-slate-100/50 p-4">

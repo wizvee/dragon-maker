@@ -8,7 +8,7 @@ interface ProgressBarProps {
 
 export default function ProgressBar({
   value,
-  colorClass = "bg-chart-4",
+  colorClass = "bg-slate-300",
   heightClass = "h-4",
 }: ProgressBarProps) {
   return (

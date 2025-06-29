@@ -18,6 +18,8 @@ export type Entity = {
   stat: string;
   type: EntityType;
   content?: string;
-  due_date?: string | null;
+  start_date: string;
   archived?: boolean;
+  due_date?: string | null;
+  completion_date?: string | null;
 };

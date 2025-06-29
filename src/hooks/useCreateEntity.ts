@@ -35,6 +35,9 @@ export function useCreateEntity() {
       queryClient.invalidateQueries({
         queryKey: ["entities", variables.userId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["entities", "byStat", variables.stat, variables.userId],
+      });
     },
   });
 }
