@@ -1,12 +1,13 @@
-import { Link, useParams } from "react-router-dom";
-import { useUser } from "@supabase/auth-helpers-react";
 import {
+  BookOpen,
   CalendarBlank,
   CheckSquare,
   PlusCircle,
   Square,
   Timer,
 } from "@phosphor-icons/react";
+import { Link, useParams } from "react-router-dom";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import { statMeta } from "@/constants/statMeta";
 import { useStatDetail } from "@/hooks/useStatDetail";
@@ -58,21 +59,23 @@ export default function StatPage() {
   return (
     <div>
       {/* Level & Progress */}
-      <div className="-mt-12 px-6">
-        <div className="bg-background mb-4 flex flex-col gap-2 rounded-xl border border-slate-400 p-4">
-          <div className="flex items-center justify-between">
-            <span className="font-bold">LEVEL {statDetail.level}</span>
-            <span className="text-sm font-semibold">
-              {statDetail.xp - statDetail.min_xp} /{" "}
-              {statDetail.max_xp - statDetail.min_xp}
-            </span>
-          </div>
-          <ProgressBar
-            value={percent}
-            colorClass={meta.color}
-            heightClass="h-4"
-          />
+      <div className="mb-4 flex flex-col gap-2 rounded-xl border border-slate-400 p-4">
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1">
+            <BookOpen size={20} weight="fill" className={meta.textColor} />
+            <span className="font-bold">{meta.label} </span>
+            <span className="text-sm font-semibold">LV.{statDetail.level}</span>
+          </span>
+          <span className="text-sm font-semibold">
+            {statDetail.xp - statDetail.min_xp} /{" "}
+            {statDetail.max_xp - statDetail.min_xp}
+          </span>
         </div>
+        <ProgressBar
+          value={percent}
+          colorClass={meta.color}
+          heightClass="h-4"
+        />
       </div>
 
       {/* Projects */}

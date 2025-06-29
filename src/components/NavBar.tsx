@@ -10,12 +10,9 @@ export default function NavBar() {
   if (statMatch) {
     title = statMeta[statMatch[1]]?.label || statMatch[1].toUpperCase();
   }
-  const isDashboard = location.pathname === "/";
 
   return (
-    <nav
-      className={`static flex h-24 flex-col items-center p-4 ${isDashboard ? "justify-center" : "pt-5"}`}
-    >
+    <nav className="static flex h-16 flex-col items-center p-4 pt-5">
       <div className="absolute self-end">
         <button className="bg-background/70 hover:bg-background cursor-pointer rounded-full p-1 transition-colors duration-300">
           <DotsThree size={16} />
