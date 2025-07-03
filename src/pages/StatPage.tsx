@@ -10,10 +10,11 @@ import { Link, useParams } from "react-router-dom";
 import { useUser } from "@supabase/auth-helpers-react";
 
 import { statMeta } from "@/constants/statMeta";
-import { useStatDetail } from "@/hooks/useStatDetail";
-import { useCreateEntity } from "@/hooks/useCreateEntity";
-import { useEntitiesByStat } from "@/hooks/useEntitiesByStat";
 import { ENTITY_TYPES, type EntityType } from "@/types/entity";
+
+import { useStatDetail } from "@/hooks/stats/useStatDetail";
+import { useCreateEntity } from "@/hooks/entities/useCreateEntity";
+import { useEntitiesByStat } from "@/hooks/stats/useEntitiesByStat";
 
 import ProgressBar from "@/components/common/ProgressBar";
 

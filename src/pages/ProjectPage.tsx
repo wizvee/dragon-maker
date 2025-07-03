@@ -1,18 +1,10 @@
-import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CalendarBlank, RocketLaunch } from "@phosphor-icons/react";
+import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
 
-import { useEntity } from "@/hooks/useEntity";
-import { useUpdateEntity } from "@/hooks/useUpdateEntity";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { useEntity } from "@/hooks/entities/useEntity";
+import ProgressBar from "@/components/common/ProgressBar";
+import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,7 +13,6 @@ export default function ProjectPage() {
   const { mutateAsync: updateEntity } = useUpdateEntity();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const handleTitleBlur = async () => {
     setIsEditing(false);
@@ -29,16 +20,6 @@ export default function ProjectPage() {
       await updateEntity({
         id,
         fields: { title },
-      });
-    }
-  };
-
-  const handleDueDateChange = async (date: Date | undefined) => {
-    setDueDate(date ?? null);
-    if (entity && id) {
-      await updateEntity({
-        id,
-        fields: { due_date: date ? date.toISOString() : null },
       });
     }
   };
@@ -53,10 +34,7 @@ export default function ProjectPage() {
   if (error) return <div>Failed to load entity.</div>;
 
   return (
-    <div className="mx-auto max-w-3xl md:mt-10">
-      <div className="mb-3 text-3xl">
-        <RocketLaunch weight="duotone" />
-      </div>
+    <div>
       {isEditing ? (
         <input
           className="m-0 mb-4 bg-transparent text-4xl font-bold focus:outline-none"
@@ -66,51 +44,36 @@ export default function ProjectPage() {
           autoFocus
         />
       ) : (
-        <h2
-          className="m-0 mb-4 cursor-pointer text-4xl font-bold"
-          onClick={() => setIsEditing(true)}
-        >
-          {title}
-        </h2>
+        <h2 className="m-0 mb-6 cursor-pointer text-4xl font-bold">{title}</h2>
       )}
-      <div className="mb-6 flex items-center gap-8 text-sm">
-        <div className="flex flex-col gap-1">
-          <div className="text-foreground/80 flex items-center gap-1 font-semibold">
-            <CalendarBlank weight="duotone" />
-            <span>마감일</span>
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5 text-sm">
+          <div className="flex items-center gap-0.5">
+            <CalendarBlank
+              size={16}
+              weight="duotone"
+              className="text-slate-400"
+            />
+            <span>{entity.start_date}</span>
+            <span> - </span>
+            <span>{entity.due_date}</span>
           </div>
-          {isEditing ? (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={"w-[180px] justify-start text-left font-normal"}
-                >
-                  {dueDate ? (
-                    format(dueDate, "yyyy년 M월 d일")
-                  ) : (
-                    <span className="text-gray-400">날짜 선택</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dueDate ?? undefined}
-                  onSelect={handleDueDateChange}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          ) : (
-            <div>
-              {dueDate ? (
-                format(dueDate, "yyyy년 M월 d일")
-              ) : (
-                <span className="text-gray-400">날짜 없음</span>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-0.5">
+            <Timer size={16} weight="duotone" className="text-slate-400" />
+            <span>1h 50min</span>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <ProgressBar value={70} colorClass="bg-chart-4" heightClass="h-4" />
+          <span className="pl-4 text-xs">80%</span>
+        </div>
+      </div>
+      <div className="my-4">
+        <div className="flex items-center justify-between">
+          <div className="my-3 font-bold">ACTIONS</div>
+          <button className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300">
+            <PlusCircle size={20} weight="fill" />
+          </button>
         </div>
       </div>
     </div>

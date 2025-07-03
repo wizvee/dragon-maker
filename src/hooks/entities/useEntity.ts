@@ -11,13 +11,14 @@ export function useEntity(id?: string) {
 
       const { data, error } = await supabase
         .from("entities")
-        .select("id, title, stat, type, content, due_date, archived")
+        .select(
+          "id, title, stat, type, content, start_date, archived, due_date, completion_date",
+        )
         .eq("id", id)
         .single();
 
       if (error) throw error;
       if (!data) throw new Error("No data returned");
-
       return data;
     },
   });

@@ -1,4 +1,4 @@
-import { useStats } from "@/hooks/useStats";
+import { useStats } from "@/hooks/stats/useStats";
 import { useUserDetail } from "@/hooks/useUserDetail";
 import { useUser } from "@supabase/auth-helpers-react";
 

@@ -4,8 +4,8 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { DotsThree, SpinnerGap } from "@phosphor-icons/react";
 
 import { STAT_LABELS } from "@/types/user";
-import { useStats } from "@/hooks/useStats";
-import { useCreateEntity } from "@/hooks/useCreateEntity";
+import { useStats } from "@/hooks/stats/useStats";
+import { useCreateEntity } from "@/hooks/entities/useCreateEntity";
 import { ENTITY_LABELS, type EntityType } from "@/types/entity";
 
 import {

@@ -38,7 +38,9 @@ export function ProtectedLayout() {
     <div className="bg-slate-300">
       <NavBar />
       <div className="bg-background rounded-t-3xl p-6">
-        <Outlet />
+        <div className="mx-auto max-w-3xl">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
