@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
 
+import { useUser } from "@supabase/auth-helpers-react";
 import { useEntity } from "@/hooks/entities/useEntity";
 import ProgressBar from "@/components/common/ProgressBar";
 import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
+import { useCreateAction } from "@/hooks/actions/useCreateAction";
+import { useActionsByEntity } from "@/hooks/actions/useActionsByEntity";
 
 export default function ProjectPage() {
+  const user = useUser();
   const { id } = useParams<{ id: string }>();
-  const { data: entity, isLoading, error } = useEntity(id);
+  const { data: entity, isLoading: loadingEntity } = useEntity(id);
+  const { data: actions } = useActionsByEntity(id || "", user?.id || "");
 
   const { mutateAsync: updateEntity } = useUpdateEntity();
   const [isEditing, setIsEditing] = useState(false);
@@ -28,10 +33,19 @@ export default function ProjectPage() {
     if (entity) setTitle(entity.title);
   }, [entity]);
 
+  const createAction = useCreateAction();
+
+  const handleCreateAction = () => {
+    if (!user?.id || !id) return;
+    createAction.mutate({
+      userId: user.id,
+      entityId: id,
+    });
+  };
+
   if (!id) return "not found";
-  if (isLoading) return <div>Loading...</div>;
+  if (loadingEntity) return <div>Loading...</div>;
   if (!entity) return <div>Entity not found.</div>;
-  if (error) return <div>Failed to load entity.</div>;
 
   return (
     <div>
@@ -71,10 +85,16 @@ export default function ProjectPage() {
       <div className="my-4">
         <div className="flex items-center justify-between">
           <div className="my-3 font-bold">ACTIONS</div>
-          <button className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300">
+          <button
+            className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300"
+            onClick={() => handleCreateAction()}
+          >
             <PlusCircle size={20} weight="fill" />
           </button>
         </div>
+        <ul>
+          {actions?.map((action) => <li key={action.id}>{action.text}</li>)}
+        </ul>
       </div>
     </div>
   );

@@ -10,13 +10,43 @@ import { Link, useParams } from "react-router-dom";
 import { useUser } from "@supabase/auth-helpers-react";
 
 import { statMeta } from "@/constants/statMeta";
-import { ENTITY_TYPES, type EntityType } from "@/types/entity";
-
 import { useStatDetail } from "@/hooks/stats/useStatDetail";
 import { useCreateEntity } from "@/hooks/entities/useCreateEntity";
-import { useEntitiesByStat } from "@/hooks/stats/useEntitiesByStat";
+import { useEntitiesByStat } from "@/hooks/entities/useEntitiesByStat";
+import { ENTITY_TYPES, type Entity, type EntityType } from "@/types/entity";
 
 import ProgressBar from "@/components/common/ProgressBar";
+
+type EntitySectionProps = {
+  title: string;
+  entities?: Entity[];
+  entityType: EntityType;
+  onCreate: (type: EntityType) => void;
+  renderItem: (entity: Entity) => React.ReactNode;
+};
+
+function EntitySection({
+  title,
+  entities,
+  entityType,
+  onCreate,
+  renderItem,
+}: EntitySectionProps) {
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <div className="my-3 font-bold">{title}</div>
+        <button
+          className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300"
+          onClick={() => onCreate(entityType)}
+        >
+          <PlusCircle size={20} weight="fill" />
+        </button>
+      </div>
+      <ul className="mb-4 space-y-3">{entities?.map(renderItem)}</ul>
+    </div>
+  );
+}
 
 export default function StatPage() {
   const user = useUser();
@@ -57,6 +87,44 @@ export default function StatPage() {
     });
   };
 
+  // 프로젝트 렌더 함수
+  const renderProject = (project: Entity) => (
+    <Link to={`/project/${project.id}`} key={project.id} className="block">
+      <li className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-400/70 p-3 transition-colors duration-300 hover:bg-slate-100/50">
+        <div className="self-start text-slate-400/80">
+          {project.completion_date ? (
+            <CheckSquare size={24} weight="fill" />
+          ) : (
+            <Square size={24} weight="fill" />
+          )}
+        </div>
+        <div className="flex w-full flex-col gap-1">
+          <span className="text-sm">{project.title}</span>
+          <div className="flex gap-1.5 text-xs">
+            <div className="flex items-center gap-0.5">
+              <CalendarBlank
+                size={14}
+                weight="duotone"
+                className="text-slate-400"
+              />
+              <span>{project.start_date}</span>
+              <span> - </span>
+              <span>{project.due_date}</span>
+            </div>
+            <div className="flex items-center gap-0.5">
+              <Timer size={14} weight="duotone" className="text-slate-400" />
+              <span>1h 50min</span>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <ProgressBar value={70} heightClass="h-2" />
+            <span className="pl-4 text-xs">80%</span>
+          </div>
+        </div>
+      </li>
+    </Link>
+  );
+
   return (
     <div>
       {/* Level & Progress */}
@@ -80,101 +148,31 @@ export default function StatPage() {
       </div>
 
       {/* Projects */}
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="my-3 font-bold">PROJECTS</div>
-          <button
-            className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300"
-            onClick={() => handleCreateEntity(ENTITY_TYPES.PROJECT)}
-          >
-            <PlusCircle size={20} weight="fill" />
-          </button>
-        </div>
-        <ul className="mb-4 space-y-3">
-          {entities
-            ?.filter(({ type }) => type === ENTITY_TYPES.PROJECT)
-            .map((project) => (
-              <Link
-                to={`/project/${project.id}`}
-                key={project.id}
-                className="block"
-              >
-                <li className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-400/70 p-3 transition-colors duration-300 hover:bg-slate-100/50">
-                  <div className="self-start text-slate-400/80">
-                    {project.completion_date ? (
-                      <CheckSquare size={24} weight="fill" />
-                    ) : (
-                      <Square size={24} weight="fill" />
-                    )}
-                  </div>
-                  <div className="flex w-full flex-col gap-1">
-                    <span className="text-sm">{project.title}</span>
-                    <div className="flex gap-1.5 text-xs">
-                      <div className="flex items-center gap-0.5">
-                        <CalendarBlank
-                          size={14}
-                          weight="duotone"
-                          className="text-slate-400"
-                        />
-                        <span>{project.start_date}</span>
-                        <span> - </span>
-                        <span>{project.due_date}</span>
-                      </div>
-                      <div className="flex items-center gap-0.5">
-                        <Timer
-                          size={14}
-                          weight="duotone"
-                          className="text-slate-400"
-                        />
-                        <span>1h 50min</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <ProgressBar value={70} heightClass="h-2" />
-                      <span className="pl-4 text-xs">80%</span>
-                    </div>
-                  </div>
-                </li>
-              </Link>
-            ))}
-        </ul>
+      <EntitySection
+        title="PROJECTS"
+        entities={entities?.filter(({ type }) => type === ENTITY_TYPES.PROJECT)}
+        entityType={ENTITY_TYPES.PROJECT}
+        onCreate={handleCreateEntity}
+        renderItem={renderProject}
+      />
 
-        {/* Areas */}
-        <div className="flex items-center justify-between">
-          <div className="mt-2 mb-2 font-bold">AREAS</div>
-          <div className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300">
-            <PlusCircle size={20} weight="fill" />
-          </div>
-        </div>
-        <ul className="mb-4 space-y-2">
-          {/* {areas.map((area, i) => (
-            <li key={i} className="flex items-center gap-2">
-              <span className="inline-flex h-6 w-6 items-center justify-center">
-                {area.icon}
-              </span>
-              <span>{area.name}</span>
-            </li>
-          ))} */}
-        </ul>
+      {/* Areas */}
+      <EntitySection
+        title="AREAS"
+        entities={[]} // 실제 데이터로 교체 필요
+        entityType={ENTITY_TYPES.AREA}
+        onCreate={handleCreateEntity}
+        renderItem={() => null} // 실제 렌더 함수로 교체 필요
+      />
 
-        {/* Resources */}
-        <div className="flex items-center justify-between">
-          <div className="mt-2 mb-2 font-bold">RESOURCES</div>
-          <div className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300">
-            <PlusCircle size={20} weight="fill" />
-          </div>
-        </div>
-        <ul className="mb-4 space-y-2">
-          {/* {areas.map((area, i) => (
-            <li key={i} className="flex items-center gap-2">
-              <span className="inline-flex h-6 w-6 items-center justify-center">
-                {area.icon}
-              </span>
-              <span>{area.name}</span>
-            </li>
-          ))} */}
-        </ul>
-      </div>
+      {/* Resources */}
+      <EntitySection
+        title="RESOURCES"
+        entities={[]} // 실제 데이터로 교체 필요
+        entityType={ENTITY_TYPES.RESOURCE}
+        onCreate={handleCreateEntity}
+        renderItem={() => null} // 실제 렌더 함수로 교체 필요
+      />
     </div>
   );
 }
