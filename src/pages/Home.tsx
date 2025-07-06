@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Lightning } from "@phosphor-icons/react";
 import { useUser } from "@supabase/auth-helpers-react";
+import { CheckSquare, Lightning } from "@phosphor-icons/react";
 
 import type { Stat } from "@/types/user";
 import { statMeta } from "@/constants/statMeta";
@@ -25,15 +25,19 @@ function MpBar({
   return (
     <div className="mb-4 rounded-xl border border-slate-400/50 p-4">
       <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-1 font-bold">
+        <div className="flex items-center gap-1 text-sm font-bold">
           <Lightning size={20} weight="fill" className="text-[#f3d98a]" />
           MP
         </div>
-        <div className="text-sm font-semibold">
+        <div className="text-xs font-semibold">
           {remainingMp} / {focusMinutes}
         </div>
       </div>
-      <ProgressBar value={mpProgress} colorClass="bg-chart-4" />
+      <ProgressBar
+        value={mpProgress}
+        colorClass="bg-chart-4"
+        heightClass="h-3"
+      />
     </div>
   );
 }
@@ -41,7 +45,7 @@ function MpBar({
 function StatsList({ stats }: { stats: Stat[] }) {
   return (
     <div className="mb-6 rounded-xl border border-slate-400/50 bg-slate-100/50 p-4">
-      <h3 className="mb-3 font-bold">STATS</h3>
+      <h3 className="mb-2 text-sm font-bold">STATS</h3>
       <div className="space-y-1">
         {stats.map((stat) => {
           const meta = statMeta[stat.stat];
@@ -51,7 +55,7 @@ function StatsList({ stats }: { stats: Stat[] }) {
               : 0;
           return (
             <Link to={`/stat/${stat.stat}`} key={stat.stat}>
-              <div className="flex items-center gap-2 py-1.5">
+              <div className="flex items-center gap-1 py-1">
                 <span className="flex w-20 items-center text-sm">
                   {meta.label}
                   <span
@@ -60,7 +64,11 @@ function StatsList({ stats }: { stats: Stat[] }) {
                     Lv.{stat.level}
                   </span>
                 </span>
-                <ProgressBar value={percent} colorClass={meta.color} />
+                <ProgressBar
+                  value={percent}
+                  colorClass={meta.color}
+                  heightClass="h-3"
+                />
               </div>
             </Link>
           );
@@ -91,7 +99,10 @@ export default function Home() {
         focusMinutes={userDetail.focus_minutes}
       />
       <div className="mb-4 rounded-xl border border-slate-400 p-4">
-        <h2 className="mb-3 font-bold">TODAY’S TASKS</h2>
+        <h2 className="mb-2 flex items-center gap-1 font-bold">
+          <CheckSquare size={20} weight="fill" className="text-[#9fc98f]" />
+          TODAY’S TASKS
+        </h2>
         <ActionList
           actions={todayActions || []}
           onStart={handleStartAction}
