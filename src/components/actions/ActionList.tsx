@@ -13,16 +13,22 @@ type ActionListProps = {
 };
 
 const ActionList = memo(({ actions, onStart, onUpdate }: ActionListProps) => (
-  <ul className="space-y-2">
-    {actions?.map((action) => (
-      <ActionListItem
-        key={action.id}
-        action={action}
-        onStart={onStart}
-        onUpdate={onUpdate}
-      />
-    ))}
-  </ul>
+  <>
+    {actions?.length ? (
+      <ul className="space-y-2">
+        {actions?.map((action) => (
+          <ActionListItem
+            key={action.id}
+            action={action}
+            onStart={onStart}
+            onUpdate={onUpdate}
+          />
+        ))}
+      </ul>
+    ) : (
+      <div>no actions</div>
+    )}
+  </>
 ));
 
 export default ActionList;

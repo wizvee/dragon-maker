@@ -1,30 +1,31 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
 
-import type { Action, UpdateActionInput } from "@/types/action";
 import { useEntity } from "@/hooks/entities/useEntity";
 import { useCreateAction } from "@/hooks/actions/useCreateAction";
-import { useUpdateAction } from "@/hooks/actions/useUpdateAction";
 import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
 import { useActionsByEntity } from "@/hooks/actions/useActionsByEntity";
 
-import ActionList from "@/components/ActionList";
+import ActionList from "@/components/actions/ActionList";
 import ProgressBar from "@/components/common/ProgressBar";
+import { useActionHandlers } from "@/hooks/actions/useActionHandlers";
 
 export default function ProjectPage() {
   const user = useUser();
   const { id } = useParams<{ id: string }>();
+
   const { data: entity, isLoading: loadingEntity } = useEntity(id);
   const { data: actions } = useActionsByEntity(id || "", user?.id || "");
+
   const { mutateAsync: updateEntity } = useUpdateEntity();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
-  const navigate = useNavigate();
-  const updateAction = useUpdateAction();
+
   const createAction = useCreateAction();
+  const { handleStartAction, handleUpdateAction } = useActionHandlers();
 
   useEffect(() => {
     if (entity) setTitle(entity.title);
@@ -45,33 +46,6 @@ export default function ProjectPage() {
     createAction.mutate({
       userId: user.id,
       entityId: id,
-    });
-  };
-
-  const handleStartAction = async (action: Action) => {
-    if (!action) return;
-    if (action.status === "done") return;
-    await updateAction.mutateAsync({
-      stat: action.stat,
-      userId: action.user_id,
-      entityId: action.entity_id,
-      actionId: action.id,
-      updates: { start_at: new Date().toISOString(), end_at: undefined },
-    });
-    navigate(`/action/${action.id}`);
-  };
-
-  const handleUpdateAction = async (
-    action: Action,
-    fields: UpdateActionInput["updates"],
-  ) => {
-    if (!user?.id || !id) return;
-    await updateAction.mutateAsync({
-      stat: action.stat,
-      userId: user.id,
-      entityId: id,
-      actionId: action.id,
-      updates: fields,
     });
   };
 

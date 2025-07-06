@@ -1,6 +1,6 @@
 import { memo } from "react";
-import type { Action, UpdateActionInput } from "@/types/action";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { Action, UpdateActionInput } from "@/types/action";
 
 type ActionListItemProps = {
   action: Action;
