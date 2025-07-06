@@ -16,6 +16,9 @@ export function useUpdateAction() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
+        queryKey: ["stats", variables.userId],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["used-focus", variables.userId],
       });
       queryClient.invalidateQueries({
@@ -29,6 +32,12 @@ export function useUpdateAction() {
       });
       queryClient.invalidateQueries({
         queryKey: ["actions", "byEntity", variables.entityId, variables.userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["active-action", variables.userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["active-actions", variables.userId],
       });
     },
   });

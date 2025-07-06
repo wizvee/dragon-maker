@@ -1,8 +1,9 @@
-import { useUser } from "@supabase/auth-helpers-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { DotsThree, ExclamationMark, House } from "@phosphor-icons/react";
-import { useActiveAction } from "@/hooks/actions/useActiveAction";
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { useUser } from "@supabase/auth-helpers-react";
+import { useActiveAction } from "@/hooks/actions/useActiveAction";
+import { DotsThree, ExclamationMark, House } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const navigate = useNavigate();

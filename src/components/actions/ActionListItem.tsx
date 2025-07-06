@@ -22,7 +22,9 @@ const ActionListItem = memo(
       <div className="flex-1 text-sm" onClick={() => onStart(action)}>
         {action.text}
       </div>
-      <div className="text-xs">{action.duration_minutes}분</div>
+      {action.duration_minutes && (
+        <div className="text-xs">{action.duration_minutes}분</div>
+      )}
     </li>
   ),
 );
