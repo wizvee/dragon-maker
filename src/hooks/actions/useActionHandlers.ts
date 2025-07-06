@@ -14,7 +14,7 @@ export function useActionHandlers() {
       userId: action.user_id,
       entityId: action.entity_id,
       actionId: action.id,
-      updates: { start_at: new Date().toISOString(), end_at: undefined },
+      updates: { start_at: new Date().toISOString(), end_at: null },
     });
     navigate(`/action/${action.id}`);
   };

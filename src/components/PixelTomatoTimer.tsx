@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { X } from "@phosphor-icons/react";
 import type { Action } from "@/types/action";
+
 import { Button } from "./ui/button";
 
 // 30픽셀 토마토 (3픽셀 꼭지, 27픽셀 몸통)
@@ -69,6 +73,7 @@ type TimerProps = {
 };
 
 export default function PixelTomatoTimer({ action, onEnd }: TimerProps) {
+  const navigate = useNavigate();
   const startAt = new Date(action.start_at + "Z").getTime();
 
   const [seconds, setSeconds] = useState(() =>
@@ -88,6 +93,9 @@ export default function PixelTomatoTimer({ action, onEnd }: TimerProps) {
 
   return (
     <div className="bg-background fixed inset-0 z-[1000] flex h-screen w-screen flex-col items-center justify-center">
+      <div className="fixed top-0 right-0 p-4">
+        <X size={24} onClick={() => navigate("/")} className="cursor-pointer" />
+      </div>
       <div className="mb-10 text-2xl font-semibold">{action.text}</div>
       <PixelTomato coloredCount={coloredCount} />
       <div className="flex items-center gap-3 text-5xl leading-[1.1] font-semibold">

@@ -26,7 +26,7 @@ function MpBar({
     <div className="mb-4 rounded-xl border border-slate-400/50 p-4">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1 font-bold">
-          <Lightning size={20} weight="fill" className="text-chart-4" />
+          <Lightning size={20} weight="fill" className="text-[#f3d98a]" />
           MP
         </div>
         <div className="text-sm font-semibold">
