@@ -15,5 +15,7 @@ export const STAT_LABELS: Record<string, string> = {
 export type User = {
   name: string;
   level: number;
+  user_id: string;
   focus_minutes: number;
+  mp_reset_time: string;
 };

@@ -10,7 +10,7 @@ export function useAction(id?: string) {
       if (!id) return Promise.reject(new Error("No id provided"));
       const { data, error } = await supabase
         .from("actions")
-        .select("*")
+        .select("*, entities(stat)")
         .eq("id", id)
         .single();
 

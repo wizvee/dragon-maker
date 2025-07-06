@@ -63,8 +63,13 @@ function PixelTomato({ coloredCount }: { coloredCount: number }) {
   );
 }
 
-export default function PixelTomatoTimer({ value }: { value: Action }) {
-  const startAt = new Date(value.start_at + "Z").getTime();
+type TimerProps = {
+  action: Action;
+  onEnd: () => Promise<void>;
+};
+
+export default function PixelTomatoTimer({ action, onEnd }: TimerProps) {
+  const startAt = new Date(action.start_at + "Z").getTime();
 
   const [seconds, setSeconds] = useState(() =>
     Math.floor((Date.now() - startAt) / 1000),
@@ -83,14 +88,18 @@ export default function PixelTomatoTimer({ value }: { value: Action }) {
 
   return (
     <div className="bg-background fixed inset-0 z-[1000] flex h-screen w-screen flex-col items-center justify-center">
-      <div className="mb-10 text-2xl font-semibold">{value.text}</div>
+      <div className="mb-10 text-2xl font-semibold">{action.text}</div>
       <PixelTomato coloredCount={coloredCount} />
       <div className="flex items-center gap-3 text-5xl leading-[1.1] font-semibold">
         <div className="leading-[1.1]">{mm}</div>
         <div className="">:</div>
         <div className="leading-[1.1]">{ss}</div>
       </div>
-      <Button className="mt-15 cursor-pointer" size="lg">
+      <Button
+        className="mt-15 cursor-pointer"
+        size="lg"
+        onClick={() => onEnd()}
+      >
         STOP
       </Button>
     </div>

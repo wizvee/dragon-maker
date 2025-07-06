@@ -6,6 +6,7 @@ export function useStats(userId: string): UseQueryResult<Stat[], Error> {
   return useQuery<Stat[]>({
     queryKey: ["stats", userId],
     queryFn: async () => {
+      if (!userId) throw new Error("userId 없음");
       const { data: stats, error: statsError } = await supabase
         .from("user_stats_with_level")
         .select("id, stat, level, xp, min_xp, max_xp")

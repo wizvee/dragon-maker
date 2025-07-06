@@ -8,9 +8,13 @@ import ProgressBar from "./common/ProgressBar";
 interface ProfileProps {
   user: User;
   stats: Stat[];
+  usedFocus: number;
 }
 
-export default function UserProfile({ stats }: ProfileProps) {
+export default function UserProfile({ user, stats, usedFocus }: ProfileProps) {
+  const remainingMp = user.focus_minutes - usedFocus;
+  const mpProgress = (remainingMp / user.focus_minutes) * 100;
+
   return (
     <div>
       {/* MP Bar */}
@@ -20,9 +24,11 @@ export default function UserProfile({ stats }: ProfileProps) {
             <Lightning size={20} weight="fill" className="text-chart-4" />
             MP
           </div>
-          <div className="text-sm font-semibold">80 / 100</div>
+          <div className="text-sm font-semibold">
+            {remainingMp} / {user.focus_minutes}
+          </div>
         </div>
-        <ProgressBar value={100} colorClass="bg-chart-4" />
+        <ProgressBar value={mpProgress} colorClass="bg-chart-4" />
       </div>
 
       <div className="mb-4 rounded-xl border border-[#22304a] bg-white p-5">

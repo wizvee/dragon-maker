@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useUser } from "@supabase/auth-helpers-react";
@@ -6,41 +6,13 @@ import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
 
 import type { Action } from "@/types/action";
 import { useEntity } from "@/hooks/entities/useEntity";
-import { useStartAction } from "@/hooks/actions/useStartAction";
 import { useCreateAction } from "@/hooks/actions/useCreateAction";
+import { useUpdateAction } from "@/hooks/actions/useUpdateAction";
 import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
 import { useActionsByEntity } from "@/hooks/actions/useActionsByEntity";
 
-import { Checkbox } from "@/components/ui/checkbox";
+import ActionList from "@/components/ActionList";
 import ProgressBar from "@/components/common/ProgressBar";
-
-type ActionListProps = {
-  actions: Action[];
-  onStart: (actionId: string) => Promise<void>;
-};
-
-const ActionList = memo(({ actions, onStart }: ActionListProps) => (
-  <ul className="space-y-2">
-    {actions?.map((action) => (
-      <ActionListItem key={action.id} action={action} onStart={onStart} />
-    ))}
-  </ul>
-));
-
-type ActionListItemProps = {
-  action: Action;
-  onStart: (actionId: string) => Promise<void>;
-};
-
-const ActionListItem = memo(({ action, onStart }: ActionListItemProps) => (
-  <li
-    className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-100/50"
-    onClick={() => onStart(action.id)}
-  >
-    <Checkbox />
-    <div className="flex-1 text-sm">{action.text}</div>
-  </li>
-));
 
 export default function ProjectPage() {
   const user = useUser();
@@ -51,7 +23,7 @@ export default function ProjectPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
-  const startAction = useStartAction();
+  const updateAction = useUpdateAction();
   const createAction = useCreateAction();
 
   useEffect(() => {
@@ -76,14 +48,16 @@ export default function ProjectPage() {
     });
   };
 
-  const handleStartAction = async (actionId: string) => {
+  const handleStartAction = async (action: Action) => {
     if (!user?.id || !id) return;
-    await startAction.mutateAsync({
-      id: actionId,
+    await updateAction.mutateAsync({
+      stat: action.stat,
       userId: user.id,
       entityId: id,
+      actionId: action.id,
+      updates: { start_at: new Date().toISOString(), end_at: undefined },
     });
-    navigate(`/action/${actionId}`);
+    navigate(`/action/${action.id}`);
   };
 
   if (!id) return "not found";

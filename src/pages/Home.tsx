@@ -3,13 +3,15 @@ import { useUserDetail } from "@/hooks/useUserDetail";
 import { useUser } from "@supabase/auth-helpers-react";
 
 import Profile from "@/components/UserProfile";
+import { useUsedFocus } from "@/hooks/useUsedFocus";
 
 export default function Home() {
   const user = useUser();
-  const { data: userDetail, isLoading: loadingUser } = useUserDetail(
-    user?.id || "",
-  );
-  const { data: stats, isLoading: loadingStats } = useStats(user?.id || "");
+  const userId = user?.id || "";
+
+  const { data: userDetail, isLoading: loadingUser } = useUserDetail(userId);
+  const { data: stats, isLoading: loadingStats } = useStats(userId);
+  const { data: usedFocus } = useUsedFocus(userDetail);
 
   if (loadingUser || loadingStats) {
     return <div>Loading...</div>;
@@ -20,7 +22,7 @@ export default function Home() {
 
   return (
     <div>
-      <Profile user={userDetail} stats={stats} />
+      <Profile user={userDetail} stats={stats} usedFocus={usedFocus || 0} />
     </div>
   );
 }

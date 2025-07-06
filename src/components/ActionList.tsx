@@ -4,7 +4,7 @@ import ActionListItem from "./ActionListItem";
 
 type ActionListProps = {
   actions: Action[];
-  onStart: (actionId: string) => Promise<void>;
+  onStart: (action: Action) => Promise<void>;
 };
 
 const ActionList = memo(({ actions, onStart }: ActionListProps) => (
