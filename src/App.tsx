@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import StatPage from "./pages/StatPage";
 import ProjectPage from "./pages/ProjectPage";
+import ActionPage from "./pages/ActionPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/stat/:statName" element={<StatPage />} />
         <Route path="/project/:id" element={<ProjectPage />} />
+        <Route path="/action/:id" element={<ActionPage />} />
       </Route>
     </Routes>
   );

@@ -90,7 +90,7 @@ export default function StatPage() {
   // 프로젝트 렌더 함수
   const renderProject = (project: Entity) => (
     <Link to={`/project/${project.id}`} key={project.id} className="block">
-      <li className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-400/70 p-3 transition-colors duration-300 hover:bg-slate-100/50">
+      <li className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-400/50 p-3 transition-colors duration-300 hover:bg-slate-100/50">
         <div className="self-start text-slate-400/80">
           {project.completion_date ? (
             <CheckSquare size={24} weight="fill" />

@@ -16,7 +16,7 @@ export default function ProgressBar({
       className={`w-full overflow-hidden bg-slate-200 ${heightClass} rounded-full`}
     >
       <div
-        className={`${colorClass} ${heightClass} rounded-full border border-slate-400 transition-all duration-500`}
+        className={`${colorClass} ${heightClass} rounded-full border border-slate-400/50 transition-all duration-500`}
         style={{ width: `${value}%` }}
       />
     </div>

@@ -1,23 +1,62 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
+import { useEffect, useState, memo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useUser } from "@supabase/auth-helpers-react";
+import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
+
+import type { Action } from "@/types/action";
 import { useEntity } from "@/hooks/entities/useEntity";
-import ProgressBar from "@/components/common/ProgressBar";
-import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
+import { useStartAction } from "@/hooks/actions/useStartAction";
 import { useCreateAction } from "@/hooks/actions/useCreateAction";
+import { useUpdateEntity } from "@/hooks/entities/useUpdateEntity";
 import { useActionsByEntity } from "@/hooks/actions/useActionsByEntity";
+
+import { Checkbox } from "@/components/ui/checkbox";
+import ProgressBar from "@/components/common/ProgressBar";
+
+type ActionListProps = {
+  actions: Action[];
+  onStart: (actionId: string) => Promise<void>;
+};
+
+const ActionList = memo(({ actions, onStart }: ActionListProps) => (
+  <ul className="space-y-2">
+    {actions?.map((action) => (
+      <ActionListItem key={action.id} action={action} onStart={onStart} />
+    ))}
+  </ul>
+));
+
+type ActionListItemProps = {
+  action: Action;
+  onStart: (actionId: string) => Promise<void>;
+};
+
+const ActionListItem = memo(({ action, onStart }: ActionListItemProps) => (
+  <li
+    className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-100/50"
+    onClick={() => onStart(action.id)}
+  >
+    <Checkbox />
+    <div className="flex-1 text-sm">{action.text}</div>
+  </li>
+));
 
 export default function ProjectPage() {
   const user = useUser();
   const { id } = useParams<{ id: string }>();
   const { data: entity, isLoading: loadingEntity } = useEntity(id);
   const { data: actions } = useActionsByEntity(id || "", user?.id || "");
-
   const { mutateAsync: updateEntity } = useUpdateEntity();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
+  const navigate = useNavigate();
+  const startAction = useStartAction();
+  const createAction = useCreateAction();
+
+  useEffect(() => {
+    if (entity) setTitle(entity.title);
+  }, [entity]);
 
   const handleTitleBlur = async () => {
     setIsEditing(false);
@@ -29,18 +68,22 @@ export default function ProjectPage() {
     }
   };
 
-  useEffect(() => {
-    if (entity) setTitle(entity.title);
-  }, [entity]);
-
-  const createAction = useCreateAction();
-
   const handleCreateAction = () => {
     if (!user?.id || !id) return;
     createAction.mutate({
       userId: user.id,
       entityId: id,
     });
+  };
+
+  const handleStartAction = async (actionId: string) => {
+    if (!user?.id || !id) return;
+    await startAction.mutateAsync({
+      id: actionId,
+      userId: user.id,
+      entityId: id,
+    });
+    navigate(`/action/${actionId}`);
   };
 
   if (!id) return "not found";
@@ -58,7 +101,12 @@ export default function ProjectPage() {
           autoFocus
         />
       ) : (
-        <h2 className="m-0 mb-6 cursor-pointer text-4xl font-bold">{title}</h2>
+        <h2
+          className="m-0 mb-6 cursor-pointer text-4xl font-bold"
+          onClick={() => setIsEditing(true)}
+        >
+          {title}
+        </h2>
       )}
       <div className="mb-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5 text-sm">
@@ -87,14 +135,12 @@ export default function ProjectPage() {
           <div className="my-3 font-bold">ACTIONS</div>
           <button
             className="hover:text-foreground cursor-pointer text-slate-400 transition-colors duration-300"
-            onClick={() => handleCreateAction()}
+            onClick={handleCreateAction}
           >
             <PlusCircle size={20} weight="fill" />
           </button>
         </div>
-        <ul>
-          {actions?.map((action) => <li key={action.id}>{action.text}</li>)}
-        </ul>
+        <ActionList actions={actions || []} onStart={handleStartAction} />
       </div>
     </div>
   );
