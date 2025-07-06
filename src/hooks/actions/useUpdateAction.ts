@@ -1,20 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import type { UpdateActionInput } from "@/types/action";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-type UpdateActionInput = {
-  stat: string;
-  userId: string;
-  entityId: string;
-  actionId: string;
-  updates: Partial<{
-    status: "pending" | "done" | "canceled";
-    text: string;
-    due_date: string; // 'YYYY-MM-DD'
-    due_time: string; // 'HH:MM:SS'
-    start_at: string; // ISO 형식
-    end_at: string;
-  }>;
-};
 
 export function useUpdateAction() {
   const queryClient = useQueryClient();

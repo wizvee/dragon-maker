@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "@supabase/auth-helpers-react";
 import { CalendarBlank, PlusCircle, Timer } from "@phosphor-icons/react";
 
-import type { Action } from "@/types/action";
+import type { Action, UpdateActionInput } from "@/types/action";
 import { useEntity } from "@/hooks/entities/useEntity";
 import { useCreateAction } from "@/hooks/actions/useCreateAction";
 import { useUpdateAction } from "@/hooks/actions/useUpdateAction";
@@ -49,15 +49,30 @@ export default function ProjectPage() {
   };
 
   const handleStartAction = async (action: Action) => {
+    if (!action) return;
+    if (action.status === "done") return;
+    await updateAction.mutateAsync({
+      stat: action.stat,
+      userId: action.user_id,
+      entityId: action.entity_id,
+      actionId: action.id,
+      updates: { start_at: new Date().toISOString(), end_at: undefined },
+    });
+    navigate(`/action/${action.id}`);
+  };
+
+  const handleUpdateAction = async (
+    action: Action,
+    fields: UpdateActionInput["updates"],
+  ) => {
     if (!user?.id || !id) return;
     await updateAction.mutateAsync({
       stat: action.stat,
       userId: user.id,
       entityId: id,
       actionId: action.id,
-      updates: { start_at: new Date().toISOString(), end_at: undefined },
+      updates: fields,
     });
-    navigate(`/action/${action.id}`);
   };
 
   if (!id) return "not found";
@@ -114,7 +129,11 @@ export default function ProjectPage() {
             <PlusCircle size={20} weight="fill" />
           </button>
         </div>
-        <ActionList actions={actions || []} onStart={handleStartAction} />
+        <ActionList
+          actions={actions || []}
+          onStart={handleStartAction}
+          onUpdate={handleUpdateAction}
+        />
       </div>
     </div>
   );
